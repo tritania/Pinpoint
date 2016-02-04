@@ -16,9 +16,9 @@ public class Map extends Activity {
         setContentView(R.layout.map);
 
         mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setStyleUrl(Style.MAPBOX_STREETS);
-        mapView.setCenterCoordinate(new LatLng(40.73581, -73.99155));
-        mapView.setZoomLevel(11);
+        mapView.setStyleUrl(Style.DARK);
+        mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
+        mapView.setZoomLevel(1);
         mapView.onCreate(savedInstanceState);
     }
 
