@@ -36,7 +36,13 @@ public class MainMenu extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.v(DEBUG, args[0].toString());
+                    if (args[0].toString().equals("LFG")) { //change fragment to waiting
+
+                    } else if (args[0].toString().equals("TP")) { //prompt camera
+
+                    } else if (args[0].toString().equals("WFI")) { //go to map
+
+                    }
                 }
             });
         }
