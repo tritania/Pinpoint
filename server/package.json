@@ -1,0 +1,20 @@
+{
+  "name": "Pinpoint",
+  "version": "0.0.1",
+  "description": "An android game",
+  "main": "pinpoint.js",
+  "scripts": {
+    "start": "node pinpoint.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tritania/Pinpoint.git"
+  },
+  "author": "Erik Wilson, Benjamin Jardine",
+  "license": "LGPL-2.0",
+  "homepage": "https://github.com/tritania/Pinpoint",
+  "dependencies": {
+    "express": "^4.1.2",
+    "socket.io": "1.4.5"
+  }
+}
