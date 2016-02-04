@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pinpoint</string>
+    <string name="accessToken">pk.eyJ1IjoidHJpdGFuaWEiLCJhIjoiY2lrOHB2bDF6MDN2YXUza3d1NjdzZGVwNiJ9.nzmIVfsc44x1LBUWQpDf9w</string>
 </resources>

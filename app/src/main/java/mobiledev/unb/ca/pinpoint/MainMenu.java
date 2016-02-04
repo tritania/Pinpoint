@@ -1,5 +1,6 @@
 package mobiledev.unb.ca.pinpoint;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +20,6 @@ import java.net.URISyntaxException;
 public class MainMenu extends AppCompatActivity {
 
     Socket sock;
-    {
-        try {
-            sock = IO.socket("http://pinpoint.magnorum.com");
-        } catch (URISyntaxException e) {}
-    }
-
     Button playbutton;
     Button settingsbutton;
 
@@ -36,12 +31,14 @@ public class MainMenu extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.v(DEBUG, args[0].toString());
                     if (args[0].toString().equals("LFG")) { //change fragment to waiting
 
                     } else if (args[0].toString().equals("TP")) { //prompt camera
 
                     } else if (args[0].toString().equals("WFI")) { //go to map
-
+                        Intent intent = new Intent(MainMenu.this, Map.class);
+                        startActivity(intent);
                     }
                 }
             });
@@ -52,9 +49,8 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("mr", matchResponse);
-        sock.connect();
-
 
         playbutton = (Button) findViewById(R.id.playbutton);
         settingsbutton = (Button) findViewById(R.id.settingsbutton);
