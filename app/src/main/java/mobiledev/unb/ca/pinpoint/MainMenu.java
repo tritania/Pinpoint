@@ -75,7 +75,7 @@ public class MainMenu extends AppCompatActivity {
         playbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!checkForConn()) {
+                if (!checkForConn(sock)) {
                     return;
                 }
                 playbutton.setEnabled(false);
@@ -91,20 +91,30 @@ public class MainMenu extends AppCompatActivity {
         });
     }
 
-    public boolean checkForConn() {
+    public boolean checkForConn(Socket sock) {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
+
         } else {
             Context context = getApplicationContext();
-            CharSequence text = "No Connection!";
+            CharSequence text = "ould not connect to Server!";
             int duration = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             return false;
         }
+        if (sock.connected() == false) {
+            Context context = getApplicationContext();
+            CharSequence text = "Could not connect to Server!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return false;
+        }
+        return true;
     }
 
     public void checkMatch() {
