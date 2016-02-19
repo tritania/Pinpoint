@@ -34,8 +34,8 @@ console.log("Connection " + socket.id)
     socket.on('disconnect', function (socket) {
         console.log('lost connection');
         for (var i = 0; i < rooms.length; i++) {
-            if (room[i].players.indexOf(socket.id) === -1) { //find room with player in it
-                if (room[i].length === 2) { //room in play?
+            if (rooms[i].players.indexOf(socket.id) === -1) { //find room with player in it
+                if (rooms[i].length === 2) { //room in play?
                     io.to(rooms[rooms.length -1].players[0]).emit('mr', 'lc'); //send disconnect to both players
                     io.to(rooms[rooms.length -1].players[1]).emit('mr', 'lc'); 
                 }

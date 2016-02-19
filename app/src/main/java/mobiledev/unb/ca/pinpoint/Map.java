@@ -2,6 +2,8 @@ package mobiledev.unb.ca.pinpoint;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -20,6 +22,13 @@ public class Map extends Activity {
         mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
         mapView.setZoomLevel(1);
         mapView.onCreate(savedInstanceState);
+
+        mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                mapView.addMarker(new MarkerOptions().title("Guess").position(point));
+            }
+        });
     }
 
     @Override
