@@ -37,7 +37,7 @@ console.log("Connection " + socket.id);
     socket.on('imgd', function (data) {
         for (var i = 0; i < rooms.length; i++) {
             if (rooms[i].players[0] === socket.id || rooms[i].players[1] === socket.id) { //find room with player in it
-                if (room[i].players[0] === socket.id) {
+                if (rooms[i].players[0] === socket.id) {
                     io.to(rooms[i].players[1]).emit('SIMG', data); //send image to other player
                 } else {
                     io.to(rooms[i].players[0]).emit('SIMG', data);

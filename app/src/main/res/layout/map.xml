@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <Button
-        android:layout_width="fill_parent"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:elevation="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imgv"
+            android:layout_gravity="center_horizontal" />
+
+        <com.mapbox.mapboxsdk.views.MapView
+            android:id="@+id/mapview"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            mapbox:access_token="@string/accessToken"
+            />
+
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton   xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fabs"
+        android:layout_width="161dp"
         android:layout_height="wrap_content"
-        android:text="SWAP VIEW"
-        android:id="@+id/pbutton"
-        android:layout_centerHorizontal="true"/>
+        android:layout_gravity="left|bottom"
+        android:elevation="6dp"
+        app:rippleColor="#ffffff"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.FloatingActionButton   xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/faba"
+        android:layout_width="137dp"
         android:layout_height="wrap_content"
-        android:id="@+id/imgv"
-        android:layout_below="@+id/pbutton"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="bottom|right"
+        android:elevation="6dp"
+        app:rippleColor="#ffffff"/>
 
-    <com.mapbox.mapboxsdk.views.MapView
-        android:id="@+id/mapview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/pbutton"
-        mapbox:access_token="@string/accessToken"
-        />
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -32,7 +33,8 @@ public class Map extends Activity {
     private MapView mapView = null;
     private ImageView imgv = null;
     private Marker guess = null;
-    private Button btn;
+    private FloatingActionButton btna;
+    private FloatingActionButton btns;
     private Socket sock;
 
 
@@ -44,7 +46,7 @@ public class Map extends Activity {
                 public void run() {
                         byte[] decodedString = Base64.decode(args[0].toString(), Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        decodedByte = Bitmap.createScaledBitmap(decodedByte, mapView.getWidth(), mapView.getHeight(), false);
+                        decodedByte = Bitmap.createScaledBitmap(decodedByte, imgv.getWidth(), imgv.getHeight(), false);
                         imgv.setImageBitmap(decodedByte);
                         imgv.setVisibility(View.VISIBLE);
                 }
@@ -62,7 +64,7 @@ public class Map extends Activity {
 
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
-        btn = (Button) findViewById(R.id.pbutton);
+        btns = (FloatingActionButton) findViewById(R.id.fabs);
 
         mapView.setVisibility(View.INVISIBLE);
         imgv.setVisibility(View.INVISIBLE);
@@ -84,7 +86,7 @@ public class Map extends Activity {
             }
         });
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        btns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mapView.getVisibility() == View.GONE) {
