@@ -21,9 +21,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="SCORE"
+        android:id="@+id/scorebutton"
+        android:layout_below="@+id/playbutton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="SETTINGS"
         android:id="@+id/settingsbutton"
-        android:layout_below="@+id/playbutton"
+        android:layout_below="@+id/scorebutton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="26dp" />
 </RelativeLayout>

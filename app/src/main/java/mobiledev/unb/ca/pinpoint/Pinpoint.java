@@ -1,8 +1,6 @@
 package mobiledev.unb.ca.pinpoint;
 
 import android.app.Application;
-import android.content.Context;
-import android.widget.Toast;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -18,9 +16,7 @@ public class Pinpoint extends Application {
     {
         try {
             sock = IO.socket("http://pinpoint.magnorum.com");
-        } catch (URISyntaxException e) {
-
-        }
+        } catch (URISyntaxException e) {}
     }
 
     public Socket startConn() {
