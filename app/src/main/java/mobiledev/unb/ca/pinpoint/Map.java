@@ -36,6 +36,7 @@ public class Map extends Activity {
     private FloatingActionButton btna;
     private FloatingActionButton btns;
     private Socket sock;
+    private boolean mapshown = false;
 
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
@@ -60,7 +61,6 @@ public class Map extends Activity {
 
         sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("SIMG", matchResponse);
-
 
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
@@ -89,12 +89,14 @@ public class Map extends Activity {
         btns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mapView.getVisibility() == View.GONE) {
+                if (!mapshown) {
                     imgv.setVisibility(View.GONE);
                     mapView.setVisibility(View.VISIBLE);
+                    mapshown = true;
                 } else {
                     imgv.setVisibility(View.VISIBLE);
                     mapView.setVisibility(View.GONE);
+                    mapshown = false;
                 }
             }
         });
