@@ -65,9 +65,11 @@ public class Map extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
         btns = (FloatingActionButton) findViewById(R.id.fabs);
+        btna = (FloatingActionButton) findViewById(R.id.faba);
 
         mapView.setVisibility(View.INVISIBLE);
         imgv.setVisibility(View.INVISIBLE);
+        btna.setVisibility(View.INVISIBLE);
 
         mapView.setStyleUrl(Style.DARK);
         mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
@@ -92,10 +94,12 @@ public class Map extends Activity {
                 if (!mapshown) {
                     imgv.setVisibility(View.GONE);
                     mapView.setVisibility(View.VISIBLE);
+                    btna.setVisibility(View.VISIBLE);
                     mapshown = true;
                 } else {
                     imgv.setVisibility(View.VISIBLE);
                     mapView.setVisibility(View.GONE);
+                    btna.setVisibility(View.INVISIBLE);
                     mapshown = false;
                 }
             }
