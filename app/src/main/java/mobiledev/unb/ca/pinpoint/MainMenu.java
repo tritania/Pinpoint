@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -55,6 +57,8 @@ public class MainMenu extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleApiClient mGoogleApiClient;
+    private Location local;
+    private LocationManager lm;
     private static final String DEBUG = "Connection Response: ";
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
@@ -133,6 +137,7 @@ public class MainMenu extends AppCompatActivity {
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             Log.v(DEBUG, String.valueOf(encodedImage.length()));
             sock.emit("imgd", encodedImage);
+            sock.emit("locd", local.getLongitude(), local.getLatitude());
         }
     }
 
@@ -150,6 +155,7 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         requestPermissions();
+        getLocation();
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -222,5 +228,16 @@ public class MainMenu extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath(); // Do this instead
         return image;
+    }
+
+    private void getLocation() {
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, null, null);
+            local = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+        else {
+            Log.i(DEBUG, "Get location without permissions...");
+        }
     }
 }

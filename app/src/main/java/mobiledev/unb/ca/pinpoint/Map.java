@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +22,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -32,7 +34,8 @@ public class Map extends Activity {
 
     private MapView mapView = null;
     private ImageView imgv = null;
-    private Marker guess = null;
+    private Marker guess, answerm = null;
+    private LatLng answer;
     private FloatingActionButton btna;
     private FloatingActionButton btns;
     private Socket sock;
@@ -68,7 +71,16 @@ public class Map extends Activity {
         }
     };
 
-    @Override
+    public void showAnswer() {
+        answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
+                mapView.addPolyline(new PolylineOptions()
+                        .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
+                                .color(Color.parseColor("#3bb2d0"))
+                                .width(2));
+        }
+
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
@@ -80,36 +92,36 @@ public class Map extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
         btns = (FloatingActionButton) findViewById(R.id.fabs);
-        btna = (FloatingActionButton) findViewById(R.id.faba);
+                btna = (FloatingActionButton) findViewById(R.id.faba);
 
         mapView.setVisibility(View.INVISIBLE);
-        imgv.setVisibility(View.INVISIBLE);
-        btna.setVisibility(View.INVISIBLE);
+                imgv.setVisibility(View.INVISIBLE);
+                btna.setVisibility(View.INVISIBLE);
 
-        mapView.setStyleUrl(Style.DARK);
-        mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
-        mapView.setZoomLevel(1);
-        mapView.onCreate(savedInstanceState);
+                mapView.setStyleUrl(Style.DARK);
+                mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
+                mapView.setZoomLevel(1);
+                mapView.onCreate(savedInstanceState);
 
-        mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng point) {
-                if (guess == null) {
-                    guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
-                } else {
-                    mapView.removeMarker(guess);
-                    guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
-                }
-            }
-        });
+                mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng point) {
+                        if (guess == null) {
+                            guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
+                        } else {
+                            mapView.removeMarker(guess);
+                            guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
+                        }
+                    }
+                });
 
-        btns.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mapshown) {
-                    imgv.setVisibility(View.GONE);
-                    mapView.setVisibility(View.VISIBLE);
-                    btna.setVisibility(View.VISIBLE);
+                btns.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!mapshown) {
+                            imgv.setVisibility(View.GONE);
+                            mapView.setVisibility(View.VISIBLE);
+                            btna.setVisibility(View.VISIBLE);
                     mapshown = true;
                 } else {
                     imgv.setVisibility(View.VISIBLE);
