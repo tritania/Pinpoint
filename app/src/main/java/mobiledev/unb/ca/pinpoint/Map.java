@@ -54,6 +54,20 @@ public class Map extends Activity {
             });
         }
     };
+
+    private Emitter.Listener matchResponseTwo = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String data = args[0].toString();
+                    LatLng answer = new LatLng();
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,7 @@ public class Map extends Activity {
 
         sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("SIMG", matchResponse);
+        sock.on("SLD", matchResponseTwo);
 
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
@@ -102,6 +117,13 @@ public class Map extends Activity {
                     btna.setVisibility(View.INVISIBLE);
                     mapshown = false;
                 }
+            }
+        });
+
+        btna.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
