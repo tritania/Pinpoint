@@ -25,6 +25,12 @@ import android.widget.Button;
 import android.app.Application;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
+
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -45,9 +51,10 @@ public class MainMenu extends AppCompatActivity {
     Socket sock;
     Button playbutton;
     Button settingsbutton;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     String mCurrentPhotoPath;
-
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private GoogleApiClient mGoogleApiClient;
     private static final String DEBUG = "Connection Response: ";
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
@@ -129,10 +136,26 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
+    public void requestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        requestPermissions();
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("mr", matchResponse);
