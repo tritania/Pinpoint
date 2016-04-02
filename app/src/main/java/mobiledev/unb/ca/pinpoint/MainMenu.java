@@ -137,14 +137,14 @@ public class MainMenu extends AppCompatActivity {
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             Log.v(DEBUG, String.valueOf(encodedImage.length()));
             sock.emit("imgd", encodedImage);
-            sock.emit("locd", local.getLongitude(), local.getLatitude());
+            //sock.emit("locd", local.getLongitude(), local.getLatitude());
         }
     }
 
     public void requestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
@@ -230,7 +230,7 @@ public class MainMenu extends AppCompatActivity {
         return image;
     }
 
-    private void getLocation() {
+    private void getLocation() { /*
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, null, null);
@@ -238,6 +238,6 @@ public class MainMenu extends AppCompatActivity {
         }
         else {
             Log.i(DEBUG, "Get location without permissions...");
-        }
+        } */
     }
 }
