@@ -137,7 +137,7 @@ public class MainMenu extends AppCompatActivity {
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             Log.v(DEBUG, String.valueOf(encodedImage.length()));
             sock.emit("imgd", encodedImage);
-            sock.emit("locd", Double.toString(local.getLongitude()) + "," + Double.toString(local.getLatitude()));
+            sock.emit("locd", Double.toString(local.getLatitude()) + "," + Double.toString(local.getLongitude()));
         }
     }
 

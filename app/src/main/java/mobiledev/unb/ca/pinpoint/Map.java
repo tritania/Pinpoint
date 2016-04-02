@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -20,6 +22,8 @@ import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
@@ -40,6 +44,7 @@ public class Map extends Activity {
     private FloatingActionButton btns;
     private Socket sock;
     private boolean mapshown = false;
+    private static final String TAG = "MainActivity";
 
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
@@ -73,7 +78,11 @@ public class Map extends Activity {
     };
 
     public void showAnswer() {
-        guess = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
+        IconFactory mIconFactory = IconFactory.getInstance(Map.this);
+        Drawable mIconDrawable = ContextCompat.getDrawable(Map.this, R.drawable.places_ic_clear);
+        Icon icon = mIconFactory.fromDrawable(mIconDrawable);
+        answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer).icon(icon));
+
         /*mapView.addPolyline(new PolylineOptions()
                 .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
                 .color(Color.parseColor("#3bb2d0"))
@@ -88,7 +97,7 @@ public class Map extends Activity {
 
         sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("SIMG", matchResponse);
-        sock.on("SLD", matchResponseTwo);
+        sock.on("SLOC", matchResponseTwo);
 
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
@@ -136,7 +145,7 @@ public class Map extends Activity {
         btna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
+                showAnswer();
             }
         });
     }
