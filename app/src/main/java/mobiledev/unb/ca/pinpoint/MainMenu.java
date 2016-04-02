@@ -137,7 +137,7 @@ public class MainMenu extends AppCompatActivity {
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             Log.v(DEBUG, String.valueOf(encodedImage.length()));
             sock.emit("imgd", encodedImage);
-            //sock.emit("locd", local.getLongitude(), local.getLatitude());
+            sock.emit("locd", Double.toString(local.getLongitude()) + "," + Double.toString(local.getLatitude()));
         }
     }
 
@@ -155,13 +155,14 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         requestPermissions();
-        getLocation();
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        getLocation();
 
         sock = ((Pinpoint)this.getApplication()).startConn();
         sock.on("mr", matchResponse);
@@ -230,14 +231,13 @@ public class MainMenu extends AppCompatActivity {
         return image;
     }
 
-    private void getLocation() { /*
+    private void getLocation() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, null, null);
+            //lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, null, null);
             local = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        else {
+        } else {
             Log.i(DEBUG, "Get location without permissions...");
-        } */
+        }
     }
 }

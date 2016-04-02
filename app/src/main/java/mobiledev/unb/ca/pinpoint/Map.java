@@ -64,6 +64,7 @@ public class Map extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.i("Data:", args[0].toString());
                     String data = args[0].toString();
                     LatLng answer = new LatLng();
                 }
