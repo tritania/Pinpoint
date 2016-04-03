@@ -219,7 +219,16 @@ public class Map extends Activity {
         btna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAnswer();
+                if (guess == null) {
+                    Context context = getApplicationContext();
+                    CharSequence text = "You need to make a guest first!";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    showAnswer();
+                }
             }
         });
     }
