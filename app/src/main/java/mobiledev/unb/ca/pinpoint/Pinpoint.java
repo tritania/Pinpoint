@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 
 public class Pinpoint extends Application {
 
-    File image;
     Socket sock;
     {
         try {

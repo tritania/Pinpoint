@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -44,6 +45,7 @@ public class Map extends Activity {
     private LatLng answer;
     private FloatingActionButton btna;
     private FloatingActionButton btns;
+    private TextView hintwait;
     private Socket sock;
     private boolean mapshown = false;
     private static final String WORST_VAL = "worst";
@@ -59,8 +61,10 @@ public class Map extends Activity {
                 public void run() {
                     byte[] decodedString = Base64.decode(args[0].toString(), Base64.DEFAULT);
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    hintwait.setVisibility(View.GONE);
                     decodedByte = Bitmap.createScaledBitmap(decodedByte, imgv.getWidth(), imgv.getHeight(), false);
                     imgv.setImageBitmap(decodedByte);
+                    btns.setVisibility(View.VISIBLE);
                     imgv.setVisibility(View.VISIBLE);
                 }
             });
@@ -139,6 +143,8 @@ public class Map extends Activity {
 
         btna.setVisibility(View.INVISIBLE);
         btns.setVisibility(View.INVISIBLE);
+        mapView.setOnClickListener(null);
+        //send back to waiting to reverse and put this user into photo
     }
 
 
@@ -155,10 +161,12 @@ public class Map extends Activity {
         imgv = (ImageView) findViewById(R.id.imgv);
         btns = (FloatingActionButton) findViewById(R.id.fabs);
         btna = (FloatingActionButton) findViewById(R.id.faba);
+        hintwait = (TextView) findViewById(R.id.imagewait);
 
         mapView.setVisibility(View.INVISIBLE);
         imgv.setVisibility(View.INVISIBLE);
         btna.setVisibility(View.INVISIBLE);
+        btns.setVisibility(View.INVISIBLE);
 
         mapView.setStyleUrl(Style.DARK);
         mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));

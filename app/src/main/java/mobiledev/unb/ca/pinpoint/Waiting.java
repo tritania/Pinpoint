@@ -37,7 +37,6 @@ public class Waiting extends Activity {
     TextView wtext;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Socket sock;
-    File image;
     private GoogleApiClient mGoogleApiClient;
     String mCurrentPhotoPath;
     private Location local;
@@ -59,7 +58,6 @@ public class Waiting extends Activity {
         getLocation();
 
         sock = ((Pinpoint)this.getApplication()).startConn();
-        image = (((Pinpoint) this.getApplication()).image);
         sock.on("mr", matchResponse);
         sock.emit("findmatch", "true");
     }
@@ -77,6 +75,7 @@ public class Waiting extends Activity {
                     } else if (args[0].toString().equals("WFI")) { //go to map
                         Intent intent = new Intent(Waiting.this, Map.class);
                         startActivity(intent);
+                        finish();
                     } else if (args[0].toString().equals("LC")) {
                         Context context = getApplicationContext();
                         CharSequence text = "Player 2 Has Left!";
@@ -92,7 +91,6 @@ public class Waiting extends Activity {
 
     public void TakePhoto() {
         Intent camIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        camIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(image.toString()+"/temp.jpg")));
         startActivityForResult(camIntent, 0);
     }
 
@@ -100,15 +98,16 @@ public class Waiting extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==0){
             try {
-                Bitmap cameraBitmap;
-                cameraBitmap = BitmapFactory.decodeFile(image + "/temp.jpg");
-                Bitmap.createBitmap(cameraBitmap);
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] imageBytes = baos.toByteArray();
                 String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
                 sock.emit("imgd", encodedImage);
-
+                sock.emit("locd", Double.toString(local.getLatitude()) + "," + Double.toString(local.getLongitude()));
+                wtext.setText("Waiting for Guess!"); //this player is waiting for the other to finish guessing
             }
             catch(Exception e){
                 e.printStackTrace();
