@@ -48,11 +48,11 @@ public class Map extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                        byte[] decodedString = Base64.decode(args[0].toString(), Base64.DEFAULT);
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        decodedByte = Bitmap.createScaledBitmap(decodedByte, imgv.getWidth(), imgv.getHeight(), false);
-                        imgv.setImageBitmap(decodedByte);
-                        imgv.setVisibility(View.VISIBLE);
+                    byte[] decodedString = Base64.decode(args[0].toString(), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    decodedByte = Bitmap.createScaledBitmap(decodedByte, imgv.getWidth(), imgv.getHeight(), false);
+                    imgv.setImageBitmap(decodedByte);
+                    imgv.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -64,24 +64,24 @@ public class Map extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("Data:", args[0].toString());
                     String data = args[0].toString();
-                    LatLng answer = new LatLng();
+                    String[] lcs = data.split(",");
+                    answer = new LatLng(Double.parseDouble(lcs[0]), Double.parseDouble(lcs[1]));
                 }
             });
         }
     };
 
     public void showAnswer() {
-        answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
-                mapView.addPolyline(new PolylineOptions()
-                        .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
-                                .color(Color.parseColor("#3bb2d0"))
-                                .width(2));
-        }
+        guess = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
+        /*mapView.addPolyline(new PolylineOptions()
+                .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
+                .color(Color.parseColor("#3bb2d0"))
+                .width(2));*/
+    }
 
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
@@ -93,36 +93,36 @@ public class Map extends Activity {
         mapView = (MapView) findViewById(R.id.mapview);
         imgv = (ImageView) findViewById(R.id.imgv);
         btns = (FloatingActionButton) findViewById(R.id.fabs);
-                btna = (FloatingActionButton) findViewById(R.id.faba);
+        btna = (FloatingActionButton) findViewById(R.id.faba);
 
         mapView.setVisibility(View.INVISIBLE);
-                imgv.setVisibility(View.INVISIBLE);
-                btna.setVisibility(View.INVISIBLE);
+        imgv.setVisibility(View.INVISIBLE);
+        btna.setVisibility(View.INVISIBLE);
 
-                mapView.setStyleUrl(Style.DARK);
-                mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
-                mapView.setZoomLevel(1);
-                mapView.onCreate(savedInstanceState);
+        mapView.setStyleUrl(Style.DARK);
+        mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));
+        mapView.setZoomLevel(1);
+        mapView.onCreate(savedInstanceState);
 
-                mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng point) {
-                        if (guess == null) {
-                            guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
-                        } else {
-                            mapView.removeMarker(guess);
-                            guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
-                        }
-                    }
-                });
+        mapView.setOnMapClickListener(new MapView.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                if (guess == null) {
+                    guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
+                } else {
+                    mapView.removeMarker(guess);
+                    guess = mapView.addMarker(new MarkerOptions().title("Guess").position(point));
+                }
+            }
+        });
 
-                btns.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!mapshown) {
-                            imgv.setVisibility(View.GONE);
-                            mapView.setVisibility(View.VISIBLE);
-                            btna.setVisibility(View.VISIBLE);
+        btns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mapshown) {
+                    imgv.setVisibility(View.GONE);
+                    mapView.setVisibility(View.VISIBLE);
+                    btna.setVisibility(View.VISIBLE);
                     mapshown = true;
                 } else {
                     imgv.setVisibility(View.VISIBLE);
@@ -136,7 +136,7 @@ public class Map extends Activity {
         btna.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer));
             }
         });
     }
