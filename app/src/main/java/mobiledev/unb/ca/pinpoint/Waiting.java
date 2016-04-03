@@ -6,12 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.view.View;
+import android.view.animation.PathInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +37,7 @@ public class Waiting extends Activity {
     TextView wtext;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Socket sock;
+    File image;
     private GoogleApiClient mGoogleApiClient;
     String mCurrentPhotoPath;
     private Location local;
@@ -54,6 +59,7 @@ public class Waiting extends Activity {
         getLocation();
 
         sock = ((Pinpoint)this.getApplication()).startConn();
+        image = (((Pinpoint) this.getApplication()).image);
         sock.on("mr", matchResponse);
         sock.emit("findmatch", "true");
     }
@@ -67,20 +73,7 @@ public class Waiting extends Activity {
                     if (args[0].toString().equals("LFG")) { //change activity to waiting
 
                     } else if (args[0].toString().equals("TP")) { //prompt camera
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                            File photoFile = null; /*
-                            try {
-                                photoFile = createImageFile();
-                            } catch (IOException ex) {
-                            }
-                            // Continue only if the File was successfully created
-                            if (photoFile != null) {
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                        Uri.fromFile(photoFile));*/
-                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                            //}
-                        }
+                        TakePhoto();
                     } else if (args[0].toString().equals("WFI")) { //go to map
                         Intent intent = new Intent(Waiting.this, Map.class);
                         startActivity(intent);
@@ -97,58 +90,30 @@ public class Waiting extends Activity {
         }
     };
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
-            /*Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(mCurrentPhotoPath);
-            Uri contentUri = Uri.fromFile(f);
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
-
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-            int photoW = bmOptions.outWidth;
-            int photoH = bmOptions.outHeight;
-
-            int targetW = 300;
-            int targetH = 400;
-
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-            bmOptions.inJustDecodeBounds = false;
-            bmOptions.inSampleSize = scaleFactor;
-            bmOptions.inPurgeable = true;
-
-            Bitmap imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions); */
-
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageBytes = baos.toByteArray();
-            String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            sock.emit("imgd", encodedImage);
-            sock.emit("locd", Double.toString(local.getLatitude()) + "," + Double.toString(local.getLongitude()));
-        }
+    public void TakePhoto() {
+        Intent camIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        camIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(image.toString()+"/temp.jpg")));
+        startActivityForResult(camIntent, 0);
     }
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getApplicationContext().getCacheDir();
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath(); // Do this instead
-        return image;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==0){
+            try {
+                Bitmap cameraBitmap;
+                cameraBitmap = BitmapFactory.decodeFile(image + "/temp.jpg");
+                Bitmap.createBitmap(cameraBitmap);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] imageBytes = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+                sock.emit("imgd", encodedImage);
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     private void getLocation() {
