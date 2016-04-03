@@ -84,9 +84,28 @@ public class Map extends Activity {
         answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer).icon(icon));
 
         mapView.addPolyline(new PolylineOptions()
-                .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
+                .add(new LatLng[]{answerm.getPosition(), guess.getPosition()})
                 .color(Color.parseColor("#3bb2d0"))
                 .width(2));
+
+        double scored = ((40075 - (guess.getPosition().distanceTo(answerm.getPosition()) / 1000)) / 40075);
+        scored = Math.pow(Math.E, 1 - (1/Math.pow(scored, 8))) * 1000;
+        int score = (int) scored;
+        /*40075 being the circumference of the earth in KM
+            Scoring algorithm works as follows, x being the distance of actual to guess, c being circumference
+            convert x to KM
+            s = (c - x)/c
+            followed by the actual score generation
+            e^(1 - (1 / s^8)) * 1000
+            using exp to get a higher number the closer you are
+            s is raised to the power of 8 to shrink the value the further away you are from correct guess
+        */
+        Context context = getApplicationContext();
+        CharSequence text = "You Scored: " + Integer.toString(score);
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 
