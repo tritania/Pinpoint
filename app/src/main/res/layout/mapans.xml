@@ -15,9 +15,8 @@
 
         <com.mapbox.mapboxsdk.views.MapView
             android:id="@+id/mapview"
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             mapbox:access_token="@string/accessToken"
             />
 
@@ -38,9 +37,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
+        android:text="Waiting For Guess"
         android:id="@+id/imagewait"
         android:textSize="30dp"
+        android:textColor="@color/wallet_highlighted_text_holo_light"
         android:paddingTop="10dp"
         android:layout_gravity="center_horizontal" />
 

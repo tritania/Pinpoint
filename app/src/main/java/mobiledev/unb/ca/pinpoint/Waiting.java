@@ -107,8 +107,9 @@ public class Waiting extends Activity {
                 String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
                 sock.emit("imgd", encodedImage);
                 sock.emit("locd", Double.toString(local.getLatitude()) + "," + Double.toString(local.getLongitude()));
-                wtext.setText("Waiting for Guess!"); //this player is waiting for the other to finish guessing
-            }
+                Intent intent = new Intent(Waiting.this, MapAns.class);
+                startActivity(intent);
+                finish();            }
             catch(Exception e){
                 e.printStackTrace();
             }

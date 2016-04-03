@@ -42,9 +42,14 @@ public class MapAns extends Activity {
 
     private MapView mapView = null;
     private Marker guess, answerm = null;
+    private LatLng gu, an;
     private TextView hintwait;
     private Socket sock;
     private FloatingActionButton btna;
+    private static final String WORST_VAL = "worst";
+    private static final String BEST_VAL = "best";
+    private static final String AVG_VAL = "avg";
+    private static final String TOTAL_VAL = "total";
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
         @Override
@@ -52,7 +57,13 @@ public class MapAns extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    String data = args[0].toString();
+                    String[] lcs = data.split(",");
+                    an = new LatLng(Double.parseDouble(lcs[0]), Double.parseDouble(lcs[1]));
+                    gu = new LatLng(Double.parseDouble(lcs[2]), Double.parseDouble(lcs[3]));
+                    hintwait.setVisibility(View.GONE);
+                    btna.setEnabled(true);
+                    showAnswer();
                 }
             });
         }
@@ -60,10 +71,8 @@ public class MapAns extends Activity {
 
 
     public void showAnswer() {
-        IconFactory mIconFactory = IconFactory.getInstance(MapAns.this);
-        Drawable mIconDrawable = ContextCompat.getDrawable(MapAns.this, R.drawable.places_ic_clear);
-        Icon icon = mIconFactory.fromDrawable(mIconDrawable);
-        answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answerm.getPosition()).icon(icon));
+        answerm = mapView.addMarker(new MarkerOptions().title("Your Location").position(an));
+        guess = mapView.addMarker(new MarkerOptions().title("Guess").position(gu));
 
         mapView.addPolyline(new PolylineOptions()
                 .add(new LatLng[]{answerm.getPosition(), guess.getPosition()})
@@ -83,13 +92,39 @@ public class MapAns extends Activity {
             s is raised to the power of 8 to shrink the value the further away you are from correct guess
         */
         Context context = getApplicationContext();
-        CharSequence text = "You Scored: " + Integer.toString(score);
+        CharSequence text = "They Scored: " + Integer.toString(score);
         int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+
+        score = (1000 - score / 3); //why not give them some points too :)
+        saveScore(score);
     }
 
+    public void saveScore(int score) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int best = preferences.getInt(BEST_VAL, 0);
+        int worst= preferences.getInt(WORST_VAL, 0);
+        int avg = preferences.getInt(AVG_VAL, 0);
+        int total = preferences.getInt(TOTAL_VAL, 0);
+
+        if (best < score || best == 0) {
+            best = score;
+        }
+        if (worst > score || worst == 0) {
+            worst = score;
+        }
+        total++;
+        avg = ((avg * (total - 1)) + score) / total;
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(BEST_VAL, best);
+        editor.putInt(WORST_VAL, worst);
+        editor.putInt(AVG_VAL, avg);
+        editor.putInt(TOTAL_VAL, total);
+        editor.commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +139,7 @@ public class MapAns extends Activity {
         hintwait = (TextView) findViewById(R.id.imagewait);
 
         btna.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+        btna.setEnabled(false);
 
         mapView.setStyleUrl(Style.DARK);
         mapView.setCenterCoordinate(new LatLng(0.00000, 0.0000));

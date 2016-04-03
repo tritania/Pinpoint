@@ -6,35 +6,36 @@ var express = require('express'),
     rooms = [];
 
 server.listen(port, function () {
-  console.log('Starting server on port: ', port);
-  rooms.push(room());
+    console.log('Starting server on port: ', port);
+    rooms.push(room());
 });
 
 io.on('connection', function (socket) {
-console.log("Connection " + socket.id);
+    console.log("Connection " + socket.id);
     socket.on('findmatch', function (client) {
         if (rooms.length == 0) {
             rooms.push(room());
         }
-        if (rooms[rooms.length -1].players.length < 2) {
+        if (rooms[rooms.length - 1].players.length < 2) {
             console.log("Adding to room: " + (rooms.length - 1));
-            rooms[rooms.length -1].players.push(socket.id);
-            if (rooms[rooms.length -1].players.length == 2) {
-                io.to(rooms[rooms.length -1].players[0]).emit('mr', 'TP'); //take photo
-                io.to(rooms[rooms.length -1].players[1]).emit('mr', 'WFI'); //waiting for imagery
+            rooms[rooms.length - 1].players.push(socket.id);
+            if (rooms[rooms.length - 1].players.length == 2) {
+                io.to(rooms[rooms.length - 1].players[0]).emit('mr', 'TP'); //take photo
+                io.to(rooms[rooms.length - 1].players[1]).emit('mr', 'WFI'); //waiting for imagery
             } else {
                 io.to(socket.id).emit('mr', 'LFG'); //Looking for game
             }
         } else {
             console.log("Adding to new room: " + rooms.length);
             rooms.push(room());
-            rooms[rooms.length -1].players.push(socket.id);
+            rooms[rooms.length - 1].players.push(socket.id);
             io.to(socket.id).emit('mr', 'LFG'); //Looking for game
         }
 
     });
-    
+
     socket.on('imgd', function (data) {
+        console.log("got image data");
         for (var i = 0; i < rooms.length; i++) {
             if (rooms[i].players[0] === socket.id || rooms[i].players[1] === socket.id) { //find room with player in it
                 if (rooms[i].players[0] === socket.id) {
@@ -46,6 +47,35 @@ console.log("Connection " + socket.id);
         }
     });
     
+    socket.on('locd', function (data) {
+        console.log("got location data");
+        for (var i = 0; i < rooms.length; i++) {
+            if (rooms[i].players[0] === socket.id || rooms[i].players[1] === socket.id) { //find room with player in it
+                console.log(data);
+                if (rooms[i].players[0] === socket.id) {
+                    io.to(rooms[i].players[1]).emit('SLOC', data); //send image to other player
+                } else {
+                    io.to(rooms[i].players[0]).emit('SLOC', data);
+                }
+            }
+        }
+    });
+    
+    socket.on('SCORE', function (data) {
+        console.log("got location data");
+        for (var i = 0; i < rooms.length; i++) {
+            if (rooms[i].players[0] === socket.id || rooms[i].players[1] === socket.id) { //find room with player in it
+                console.log(data);
+                if (rooms[i].players[0] === socket.id) {
+                    io.to(rooms[i].players[1]).emit('OPS', data); //send score to other player
+                } else {
+                    io.to(rooms[i].players[0]).emit('OPS', data);
+                }
+            }
+        }
+    });
+
+
     socket.on('disconnect', function (socket) {
         console.log('lost connection');
         for (var i = 0; i < rooms.length; i++) {
@@ -60,6 +90,5 @@ console.log("Connection " + socket.id);
 });
 
 function room() {
-    return { players: [], state: null, full: false};
+    return { players: [], state: null, full: false };
 }
-

@@ -144,10 +144,10 @@ public class Map extends Activity {
 
         btns.setVisibility(View.INVISIBLE);
         mapView.setOnMapClickListener(null);
-        sock.emit("SCORE", Double.toString(answer.getLongitude()) + "," +
-                Double.toString(answer.getLatitude()) + "," +
-                Double.toString(guess.getPosition().getLongitude()) + "," +
-                Double.toString(guess.getPosition().getLatitude()));
+        sock.emit("SCORE", Double.toString(answer.getLatitude()) + "," +
+                Double.toString(answer.getLongitude()) + "," +
+                Double.toString(guess.getPosition().getLatitude()) + "," +
+                Double.toString(guess.getPosition().getLongitude()));
 
         btna.setOnClickListener(new View.OnClickListener() {
             @Override
