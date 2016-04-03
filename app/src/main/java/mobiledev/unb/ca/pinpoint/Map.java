@@ -83,10 +83,10 @@ public class Map extends Activity {
         Icon icon = mIconFactory.fromDrawable(mIconDrawable);
         answerm = mapView.addMarker(new MarkerOptions().title("Actual Location").position(answer).icon(icon));
 
-        /*mapView.addPolyline(new PolylineOptions()
+        mapView.addPolyline(new PolylineOptions()
                 .add(new LatLng[] { answerm.getPosition(), guess.getPosition() })
                 .color(Color.parseColor("#3bb2d0"))
-                .width(2));*/
+                .width(2));
     }
 
 
