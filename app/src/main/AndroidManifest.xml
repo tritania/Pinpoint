@@ -24,6 +24,9 @@
         <activity android:name=".Map">
 
         </activity>
+        <activity android:name=".Score">
+
+        </activity>
     </application>
 
 </manifest>

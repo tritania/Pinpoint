@@ -3,11 +3,13 @@ package mobiledev.unb.ca.pinpoint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -44,8 +46,10 @@ public class Map extends Activity {
     private FloatingActionButton btns;
     private Socket sock;
     private boolean mapshown = false;
-    private static final String TAG = "MainActivity";
-
+    private static final String WORST_VAL = "worst";
+    private static final String BEST_VAL = "best";
+    private static final String AVG_VAL = "avg";
+    private static final String TOTAL_VAL = "total";
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
         @Override
@@ -77,6 +81,30 @@ public class Map extends Activity {
         }
     };
 
+    public void saveScore(int score) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int best = preferences.getInt(BEST_VAL, 0);
+        int worst= preferences.getInt(WORST_VAL, 0);
+        int avg = preferences.getInt(AVG_VAL, 0);
+        int total = preferences.getInt(TOTAL_VAL, 0);
+
+        if (best < score || best == 0) {
+            best = score;
+        }
+        if (worst > score || worst == 0) {
+            worst = score;
+        }
+        total++;
+        avg = ((avg * (total - 1)) + score) / total;
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(BEST_VAL, best);
+        editor.putInt(WORST_VAL, worst);
+        editor.putInt(AVG_VAL, avg);
+        editor.putInt(TOTAL_VAL, total);
+        editor.commit();
+    }
+
     public void showAnswer() {
         IconFactory mIconFactory = IconFactory.getInstance(Map.this);
         Drawable mIconDrawable = ContextCompat.getDrawable(Map.this, R.drawable.places_ic_clear);
@@ -102,10 +130,15 @@ public class Map extends Activity {
         */
         Context context = getApplicationContext();
         CharSequence text = "You Scored: " + Integer.toString(score);
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+
+        saveScore(score);
+
+        btna.setVisibility(View.INVISIBLE);
+        btns.setVisibility(View.INVISIBLE);
     }
 
 

@@ -52,14 +52,13 @@ public class MainMenu extends AppCompatActivity {
 
     Socket sock;
     Button playbutton;
-    Button settingsbutton;
+    Button scorebutton;
     String mCurrentPhotoPath;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleApiClient mGoogleApiClient;
     private Location local;
     private LocationManager lm;
-    private static final String DEBUG = "Connection Response: ";
 
     private Emitter.Listener matchResponse = new Emitter.Listener() {
         @Override
@@ -102,7 +101,6 @@ public class MainMenu extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(DEBUG, "image captured");
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             /*Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -135,7 +133,6 @@ public class MainMenu extends AppCompatActivity {
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            Log.v(DEBUG, String.valueOf(encodedImage.length()));
             sock.emit("imgd", encodedImage);
             sock.emit("locd", Double.toString(local.getLatitude()) + "," + Double.toString(local.getLongitude()));
         }
@@ -168,7 +165,7 @@ public class MainMenu extends AppCompatActivity {
         sock.on("mr", matchResponse);
 
         playbutton = (Button) findViewById(R.id.playbutton);
-        settingsbutton = (Button) findViewById(R.id.settingsbutton);
+        scorebutton = (Button) findViewById(R.id.scorebutton);
 
         playbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,10 +178,11 @@ public class MainMenu extends AppCompatActivity {
             }
         });
 
-        settingsbutton.setOnClickListener(new View.OnClickListener() {
+        scorebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainMenu.this, Score.class);
+                startActivity(intent);
             }
         });
     }
@@ -237,7 +235,6 @@ public class MainMenu extends AppCompatActivity {
             //lm.requestSingleUpdate(LocationManager.GPS_PROVIDER, null, null);
             local = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else {
-            Log.i(DEBUG, "Get location without permissions...");
         }
     }
 }
