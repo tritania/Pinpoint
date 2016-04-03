@@ -21,12 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Map">
-
-        </activity>
-        <activity android:name=".Score">
-
-        </activity>
+        <activity android:name=".Map"> </activity>
+        <activity android:name=".Score"> </activity>
+        <activity android:name=".Waiting"> </activity>
     </application>
 
 </manifest>
