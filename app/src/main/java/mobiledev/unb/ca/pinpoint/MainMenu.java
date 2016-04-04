@@ -1,12 +1,15 @@
 package mobiledev.unb.ca.pinpoint;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -74,6 +77,10 @@ public class MainMenu extends AppCompatActivity {
 
         requestPermissions();
         sock = ((Pinpoint)this.getApplication()).startConn();
+
+        android.support.v7.app.ActionBar bar = getSupportActionBar();
+        bar.setDisplayShowTitleEnabled(false);
+        bar.hide();
 
         playbutton = (Button) findViewById(R.id.playbutton);
         scorebutton = (Button) findViewById(R.id.scorebutton);
