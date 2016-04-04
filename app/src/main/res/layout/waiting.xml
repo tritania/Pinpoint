@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#5b8a54"
     android:layout_height="match_parent">
 
     <TextView
@@ -12,4 +13,13 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:textSize="30dp" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/pinpoint"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
