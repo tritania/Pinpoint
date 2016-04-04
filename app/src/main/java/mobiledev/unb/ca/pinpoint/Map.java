@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -141,11 +142,22 @@ public class Map extends Activity {
 
         saveScore(score);
 
-        btna.setVisibility(View.INVISIBLE);
         btns.setVisibility(View.INVISIBLE);
-        mapView.setOnClickListener(null);
-        //send back to waiting to reverse and put this user into photo
-    }
+        mapView.setOnMapClickListener(null);
+        sock.emit("SCORE", Double.toString(answer.getLongitude()) + "," +
+                Double.toString(answer.getLatitude()) + "," +
+                Double.toString(guess.getPosition().getLongitude()) + "," +
+                Double.toString(guess.getPosition().getLatitude()));
+
+        btna.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Map.this, Score.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+}
 
 
     @Override
@@ -162,6 +174,8 @@ public class Map extends Activity {
         btns = (FloatingActionButton) findViewById(R.id.fabs);
         btna = (FloatingActionButton) findViewById(R.id.faba);
         hintwait = (TextView) findViewById(R.id.imagewait);
+
+        btna.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
 
         mapView.setVisibility(View.INVISIBLE);
         imgv.setVisibility(View.INVISIBLE);
